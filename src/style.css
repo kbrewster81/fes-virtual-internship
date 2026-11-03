@@ -217,6 +217,12 @@ button:disabled {
   color: #394547;
   font-weight: 300;
 }
+.statistics__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
 
 .statistics__heading {
   font-size: 32px;
