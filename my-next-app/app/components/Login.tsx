@@ -3,6 +3,7 @@ import google from "../assets/Image/google.png";
 import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useRouter } from "next/navigation";
 
 type LoginProps = {
   onClose: () => void;
@@ -10,6 +11,64 @@ type LoginProps = {
 
 export default function Login({ onClose }: LoginProps) {
   const [showLogin, setShowLogin] = useState(false);
+  const router = useRouter();
+  const [view, setView] = useState("login");
+  if (view !== "login")
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <form
+          onSubmit={(event) => event.preventDefault()}
+          className="relative w-full max-w-md rounded bg-white p-8"
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-3 right-4 text-3xl text-black cursor-pointer"
+          >
+            <AiOutlineClose />
+          </button>
+
+          <h2 className="mb-6 text-center text-xl font-bold text-[#032b41]">
+            {view === "reset" ? "Reset Password" : "Sign Up"}
+          </h2>
+
+          <div className="flex flex-col gap-4">
+            <input
+              type="email"
+              placeholder="Email Address"
+              aria-label="Email Address"
+              required
+              className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
+            />
+
+            {view === "signup" && (
+              <input
+                type="password"
+                placeholder="Password"
+                aria-label="Password"
+                required
+                className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
+              />
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="bg-[#20d481] w-full h-12 mt-4 rounded text-black cursor-pointer"
+          >
+            {view === "reset" ? "Reset Password" : "Sign Up"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setView("login")}
+            className="w-full text-center text-[#116be9] font-light text-sm mt-6 cursor-pointer"
+          >
+            Back to Login
+          </button>
+        </form>
+      </div>
+    );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
@@ -26,6 +85,7 @@ export default function Login({ onClose }: LoginProps) {
           Log in to Summarist
         </h2>
         <button
+          onClick={() => router.push("/for-you")}
           type="button"
           className="relative flex w-full items-center justify-center rounded bg-[#3b5998] py-3 text-white cursor-pointer"
         >
@@ -38,6 +98,7 @@ export default function Login({ onClose }: LoginProps) {
           <div className="h-px flex-1 bg-gray-300"></div>
         </div>
         <button
+          onClick={() => router.push("/for-you")}
           type="button"
           className="relative flex w-full items-center justify-center rounded bg-blue-500 py-3 text-white cursor-pointer"
         >
@@ -67,16 +128,24 @@ export default function Login({ onClose }: LoginProps) {
           />
         </div>
         <button
-          onClick={() => setShowLogin(true)}
+          onClick={() => router.push("/for-you")}
           className="bg-[#20d481] w-full text-base items-center h-12 mt-4 py-3 px-12 rounded cursor-pointer"
         >
           Login
         </button>
 
-        <div className="text-center text-[#116be9] font-light text-sm mt-6 cursor-pointer">
+        <button
+          type="button"
+          onClick={() => setView("reset")}
+          className="w-full text-center text-[#116be9] font-light text-sm mt-6 cursor-pointer"
+        >
           Forgot your password?
-        </div>
-        <button className="h-14  text-center bg-[#f1f6f4] text-[#116be9] w-full font-light text-base w-full cursor-pointer">
+        </button>
+        <button
+          type="button"
+          onClick={() => setView("signup")}
+          className="h-14 text-center bg-[#f1f6f4] text-[#116be9] w-full font-light text-base cursor-pointer"
+        >
           Don't have an account?
         </button>
       </div>
