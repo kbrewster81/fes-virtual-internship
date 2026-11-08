@@ -15,7 +15,7 @@ export default function SideBar() {
   return (
     <div className="flex flex-col bg-[#f7faf9] fixed w-[200px] min-w-[200px] top-[0] left-[0] mb-[20px] h-screen backdrop-opacity-[0] transition-all">
       <Image src={logo} alt="Summarist logo" className="w-40 h-auto"></Image>
-      <div className="flex flex-col justify-between py-4 mb-[20px]">
+      <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px] mb-[20px]">
         <div className="flex mt-[32px]">
           <Link
             href="/for-you"
@@ -52,7 +52,9 @@ export default function SideBar() {
             Search
           </Link>
         </div>
-        <div className="flex mt-[40px]">
+      </div>
+      <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px]">
+        <div className="flex mt-[80px]">
           <Link
             href="/for-you"
             className="flex  gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
