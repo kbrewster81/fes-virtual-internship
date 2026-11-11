@@ -9,6 +9,10 @@ import { IoMdStarOutline } from "react-icons/io";
 import AudioDuration from "@/app/components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
 import Navbar from "@/app/components/Navbar";
+import { AiOutlineRead } from "react-icons/ai";
+import { TiMicrophoneOutline } from "react-icons/ti";
+import { CiBookmark } from "react-icons/ci";
+import { HiOutlineLightBulb } from "react-icons/hi";
 
 type Book = {
   id: string;
@@ -17,6 +21,10 @@ type Book = {
   imageLink: string;
   subTitle: string;
   averageRating: number;
+  duration: string;
+  summary: string;
+  bookDescription: string;
+  authorDescription: string;
 };
 
 export default function BookInfoClient({ id }: { id: string }) {
@@ -24,7 +32,7 @@ export default function BookInfoClient({ id }: { id: string }) {
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book[]>([]);
   const [book, setBook] = useState<Book | null>(null);
-
+  const [duration, setDuration] = useState("--:--");
   useEffect(() => {
     if (!id) return;
 
@@ -37,6 +45,7 @@ export default function BookInfoClient({ id }: { id: string }) {
       })
       .then((data) => {
         setBook(data);
+        setDuration(data.duration);
       })
       .catch((error) => console.error(error));
   }, [id]);
@@ -64,19 +73,102 @@ export default function BookInfoClient({ id }: { id: string }) {
             </button>
           </div>
         </header>
-        <div className="flex flex-col md:flex-row justify-between gap-10">
+        <div className="flex flex-col md:flex-row gap-10">
+          {/* LEFT COLUMN */}
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-[#032b41] mb-4">
+            <h1 className="text-[32px] font-bold leading-tight text-[#032b41] mb-4">
               {book.title}
             </h1>
 
-            <h2 className="font-semibold text-[#032b41] mb-4">{book.author}</h2>
+            <h2 className="text-base font-bold text-[#032b41] mb-4">
+              {book.author}
+            </h2>
 
-            <p className="text-xl text-[#032b41]">{book.subTitle}</p>
+            <p className="text-xl font-light text-[#032b41] mb-5">
+              {book.subTitle}
+            </p>
+            <audio
+              key={book.id}
+              src={book.audioLink}
+              preload="metadata"
+              hidden
+              onLoadStart={() => setDuration("--:--")}
+              onLoadedMetadata={(event) => {
+                const seconds = event.currentTarget.duration;
+                if (!Number.isFinite(seconds)) return;
 
-           
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.floor(seconds % 60);
+
+                setDuration(
+                  `${String(minutes).padStart(2, "0")}:${String(
+                    remainingSeconds,
+                  ).padStart(2, "0")}`,
+                );
+              }}
+            />
+
+            {/* Ratings grid goes HERE */}
+            <div className="border-t border-[#e1e7ea] pt-5  md:flex-row">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 w-full max-w-[400px] text-sm font-semibold text-[#032b41]">
+                <div className="flex items-center gap-2 whitespace-nowrap">
+                  <IoMdStarOutline size={24} />
+                  <span>4.4 (608 ratings)</span>
+                </div>
+
+                <div className="flex items-center gap-2 whitespace-nowrap">
+                  <PiClockThin size={24} />
+                  <span>{duration}</span>
+                </div>
+
+                <div className="flex items-center gap-2 whitespace-nowrap">
+                  <TiMicrophoneOutline size={24} />
+                  <span>Audio & Text</span>
+                </div>
+
+                <div className="flex items-center gap-2 whitespace-nowrap">
+                  <HiOutlineLightBulb size={24} />
+                  <span>8 Key ideas</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 mb-6  mt-6">
+              <button className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded">
+                <AiOutlineRead size={24} />
+                Read
+              </button>
+              <button className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded">
+                <TiMicrophoneOutline size={24} />
+                Listen
+              </button>
+            </div>
+            <div className="flex items-center gap-2 text-[#0365f2] font-semibold cursor-pointer mb-10 text-lg">
+              <CiBookmark size={22} />
+              <span>Add to My Library</span>
+            </div>
+            <div className="text-lg font-bold  text-[#032b41] mb-[18px]">
+              What's it about?
+            </div>
+            <div className="text-[#032b41] font-medium leading-relaxed"></div>
+            <div className="flex flex-wrap gap-4 mt-4">
+              {book.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-[#f1f6f4] px-4 py-3 text-[#032b41] font-semibold rounded"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="mt-8 whitespace-pre-line text-[#032b41]">
+              {book.summary}
+              {book.bookDescription}
+              {book.authorDescription}
+            </div>
           </div>
 
+          {/* RIGHT COLUMN */}
           <div className="w-full md:w-[300px] shrink-0">
             <img
               src={book.imageLink}
