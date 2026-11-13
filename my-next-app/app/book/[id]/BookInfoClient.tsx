@@ -13,6 +13,8 @@ import { AiOutlineRead } from "react-icons/ai";
 import { TiMicrophoneOutline } from "react-icons/ti";
 import { CiBookmark } from "react-icons/ci";
 import { HiOutlineLightBulb } from "react-icons/hi";
+import { useRouter } from "next/navigation";
+import { BsBookmarkFill } from "react-icons/bs";
 
 type Book = {
   id: string;
@@ -25,16 +27,21 @@ type Book = {
   summary: string;
   bookDescription: string;
   authorDescription: string;
+  audioLink: string;
+  tags: string[];
 };
 
 export default function BookInfoClient({ id }: { id: string }) {
-  const [books, setBooks] = useState<Book[]>([]);
+  const router = useRouter();
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book[]>([]);
   const [book, setBook] = useState<Book | null>(null);
   const [duration, setDuration] = useState("--:--");
+
   useEffect(() => {
     if (!id) return;
+
+    setDuration("--:--");
 
     fetch(
       `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${encodeURIComponent(id)}`,
@@ -45,11 +52,38 @@ export default function BookInfoClient({ id }: { id: string }) {
       })
       .then((data) => {
         setBook(data);
-        setDuration(data.duration);
       })
       .catch((error) => console.error(error));
   }, [id]);
-  if (!book) return <div>Loading book...</div>;
+
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const savedBooks = JSON.parse(localStorage.getItem("myLibrary") || "[]");
+
+    setIsSaved(savedBooks.includes(id));
+  }, [id]);
+
+  const handleAddToLibrary = () => {
+    if (!id) return;
+
+    const savedBooks = JSON.parse(localStorage.getItem("myLibrary") || "[]");
+
+    if (!savedBooks.includes(id)) {
+      savedBooks.push(id);
+      localStorage.setItem("myLibrary", JSON.stringify(savedBooks));
+    }
+
+    setIsSaved(true);
+    console.log("Book saved to library!");
+  };
+
+  // Make sure the book exists before displaying it
+  if (!book) {
+    return <div>Loading book...</div>;
+  }
 
   return (
     <div className="min-h-screen">
@@ -91,10 +125,11 @@ export default function BookInfoClient({ id }: { id: string }) {
               key={book.id}
               src={book.audioLink}
               preload="metadata"
-              hidden
-              onLoadStart={() => setDuration("--:--")}
               onLoadedMetadata={(event) => {
                 const seconds = event.currentTarget.duration;
+
+                console.log("Audio duration:", seconds);
+
                 if (!Number.isFinite(seconds)) return;
 
                 const minutes = Math.floor(seconds / 60);
@@ -104,6 +139,12 @@ export default function BookInfoClient({ id }: { id: string }) {
                   `${String(minutes).padStart(2, "0")}:${String(
                     remainingSeconds,
                   ).padStart(2, "0")}`,
+                );
+              }}
+              onError={(event) => {
+                console.error(
+                  "Audio metadata error:",
+                  event.currentTarget.error,
                 );
               }}
             />
@@ -133,24 +174,41 @@ export default function BookInfoClient({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 mb-6  mt-6">
-              <button className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded">
+            <div className="flex items-center gap-4 mb-6 mt-6">
+              <button
+                onClick={() => router.push(`/player/${book.id}`)}
+                className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded"
+              >
                 <AiOutlineRead size={24} />
                 Read
               </button>
-              <button className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded">
+
+              <button
+                onClick={() => router.push(`/player/${book.id}`)}
+                className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded"
+              >
                 <TiMicrophoneOutline size={24} />
                 Listen
               </button>
             </div>
-            <div className="flex items-center gap-2 text-[#0365f2] font-semibold cursor-pointer mb-10 text-lg">
-              <CiBookmark size={22} />
-              <span>Add to My Library</span>
+            <div
+              onClick={handleAddToLibrary}
+              className="flex items-center gap-2 text-[#0365f2] font-semibold cursor-pointer mb-10 text-lg"
+            >
+              {isSaved ? (
+                <BsBookmarkFill size={22} />
+              ) : (
+                <CiBookmark size={22} />
+              )}
+
+              <span>
+                {isSaved ? "Saved in My Library" : "Add to My Library"}
+              </span>
             </div>
             <div className="text-lg font-bold  text-[#032b41] mb-[18px]">
               What's it about?
             </div>
-            <div className="text-[#032b41] font-medium leading-relaxed"></div>
+
             <div className="flex flex-wrap gap-4 mt-4">
               {book.tags.map((tag) => (
                 <span
@@ -161,11 +219,16 @@ export default function BookInfoClient({ id }: { id: string }) {
                 </span>
               ))}
             </div>
-            <div className="mt-8 whitespace-pre-line text-[#032b41]">
-              {book.summary}
-              {book.bookDescription}
-              {book.authorDescription}
-            </div>
+            <section className="mt-8 text-[#032b41]">
+              <p className="text-[#032b41] leading-relaxed whitespace-pre-line">
+                {book.bookDescription}
+              </p>
+              <h2 className="text-lg font-bold mb-4">About the author</h2>
+
+              <p className="leading-relaxed whitespace-pre-line">
+                {book.authorDescription}
+              </p>
+            </section>
           </div>
 
           {/* RIGHT COLUMN */}

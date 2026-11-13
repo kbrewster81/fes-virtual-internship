@@ -27,11 +27,11 @@ export default function SideBar() {
         </div>
         <div className="flex mt-[32px]">
           <Link
-            href="/for-you"
+            href="/my-library"
             className="flex  gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
           >
             <BsBookmark className=" w-6 h-6" />
-            My Library
+            My Library 
           </Link>
         </div>
         <div className="flex mt-[32px]">
