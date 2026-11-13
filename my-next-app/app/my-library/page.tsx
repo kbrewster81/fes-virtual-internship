@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/app/for-you/sidebar";
+import Navbar from "@/app/components/Navbar";
+import { IoIosSearch } from "react-icons/io";
 
 type Book = {
   id: string;
@@ -36,10 +38,42 @@ export default function MyLibrary() {
   return (
     <div className="p-8">
       <Sidebar />
-      <div className="w-6">
-        <div className="text-xl font-bold text-[#032b41] mb-[16px]">
-          Saved Books
+
+      <header className="h-[76px] flex items-center justify-end px-12 border-b border-[#e1e7ea]">
+        <div className="flex items-center w-[340px] max-w-full h-[40px] bg-[#f1f6f4] border-2 border-[#e1e7ea] rounded-lg overflow-hidden">
+          <input
+            type="text"
+            placeholder="Search for books"
+            className="flex-1 min-w-0 px-4 bg-transparent outline-none text-[#042330]"
+          />
+          <button
+            type="button"
+            aria-label="Search books"
+            className="h-full px-3 border-l border-[#e1e7ea]"
+          >
+            <IoIosSearch size={22} />
+          </button>
         </div>
+      </header>
+
+      <div className="text-xl font-bold text-[#032b41] mb-[16px] text-center">
+        Saved Books
+      </div>
+      <div className="text-sm font-light text-[#394547] mb-[16px] text-center">
+        0 items
+      </div>
+      <div className="bg-[#f1f6f4] max-w-fit flex flex-col items-center gap-[8px] p-[32px] br-[12px] m-[56px] text-center">
+        Save your favorite books!
+        <div className="text-[#394547]">
+          When you save a book, it will appear here
+        </div>
+      </div>
+
+      <div className="text-xl font-bold text-[#032b41] mb-[16px] mt-[24px] text-center">
+        Finished
+      </div>
+      <div className="text-sm font-light text-[#394547] mb-[16px] text-center">
+        13 items
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {books.map((book) => (

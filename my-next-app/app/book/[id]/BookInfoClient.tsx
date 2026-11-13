@@ -15,6 +15,7 @@ import { CiBookmark } from "react-icons/ci";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { BsBookmarkFill } from "react-icons/bs";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 
 type Book = {
   id: string;
@@ -66,21 +67,25 @@ export default function BookInfoClient({ id }: { id: string }) {
     setIsSaved(savedBooks.includes(id));
   }, [id]);
 
-  const handleAddToLibrary = () => {
+  const handleToggleSave = () => {
     if (!id) return;
 
     const savedBooks = JSON.parse(localStorage.getItem("myLibrary") || "[]");
 
-    if (!savedBooks.includes(id)) {
+    if (savedBooks.includes(id)) {
+      const updatedBooks = savedBooks.filter((bookId: string) => bookId !== id);
+
+      localStorage.setItem("myLibrary", JSON.stringify(updatedBooks));
+
+      setIsSaved(false);
+    } else {
       savedBooks.push(id);
+
       localStorage.setItem("myLibrary", JSON.stringify(savedBooks));
+
+      setIsSaved(true);
     }
-
-    setIsSaved(true);
-    console.log("Book saved to library!");
   };
-
-  // Make sure the book exists before displaying it
   if (!book) {
     return <div>Loading book...</div>;
   }
@@ -192,7 +197,7 @@ export default function BookInfoClient({ id }: { id: string }) {
               </button>
             </div>
             <div
-              onClick={handleAddToLibrary}
+              onClick={handleToggleSave}
               className="flex items-center gap-2 text-[#0365f2] font-semibold cursor-pointer mb-10 text-lg"
             >
               {isSaved ? (
