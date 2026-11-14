@@ -22,6 +22,7 @@ type Book = {
   authorDescription: string;
   audioLink: string;
   tags: string[];
+  subscriptionRequired: boolean;
 };
 
 export default function ForYouPage() {
@@ -238,6 +239,13 @@ export default function ForYouPage() {
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="flex h-6 justify-end mb-2">
+              {book.subscriptionRequired && (
+                <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
+                  Premium
+                </span>
+              )}
+            </div>
             {recommendedBooks.slice(0, 5).map((book) => (
               <Link href={`/book/${book.id}`} key={book.id}>
                 <div>
@@ -270,6 +278,13 @@ export default function ForYouPage() {
             Suggest Books
           </h2>
           <p className="font-light text-[#394547] mb-10">Browse those books</p>
+          <div className="flex h-6 justify-end mb-2">
+            {book.subscriptionRequired && (
+              <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
+                Premium
+              </span>
+            )}
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {suggestedBooks.slice(0, 5).map((book) => (
               <Link href={`/book/${book.id}`} key={book.id}>

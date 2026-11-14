@@ -39,9 +39,20 @@ export default function BookInfoClient({ id }: { id: string }) {
   const [selectedBook, setSelectedBook] = useState<Book[]>([]);
   const [book, setBook] = useState<Book | null>(null);
   const [duration, setDuration] = useState("--:--");
+  const [subscriptionRequired, setSubscriptionRequired] = useState(true);
+
+  const formatDuration = (seconds: any) => {
+    if (!seconds || isNaN(seconds)) return "--:--";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
 
   useEffect(() => {
     if (!id) return;
+
+    let isMounted = true;
+    let audio: any = null;
 
     setDuration("--:--");
 
@@ -53,9 +64,38 @@ export default function BookInfoClient({ id }: { id: string }) {
         return res.json();
       })
       .then((data) => {
+        if (!isMounted) return;
         setBook(data);
+
+        if (data.audioLink) {
+          audio = new Audio();
+          audio.preload = "metadata"; // Must be assigned as a property, not called as a function
+
+          audio.onloadedmetadata = () => {
+            if (isMounted) {
+              setDuration(formatDuration(audio.duration));
+            }
+          };
+
+          audio.onerror = () => {
+            console.error("Failed to load audio metadata");
+          };
+
+          audio.src = data.audioLink;
+        }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        if (isMounted) console.error(error);
+      });
+
+    return () => {
+      isMounted = false;
+      if (audio) {
+        audio.onloadedmetadata = null;
+        audio.onerror = null;
+        audio.src = "";
+      }
+    };
   }, [id]);
 
   const [isSaved, setIsSaved] = useState(false);
