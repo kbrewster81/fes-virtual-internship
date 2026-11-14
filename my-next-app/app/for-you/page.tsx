@@ -10,18 +10,54 @@ import AudioDuration from "../components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
 
 type Book = {
-  id: string;
+  id: string[];
   title: string;
   author: string;
   imageLink: string;
   subTitle: string;
   averageRating: number;
+  duration: string;
+  summary: string;
+  bookDescription: string;
+  authorDescription: string;
+  audioLink: string;
+  tags: string[];
 };
 
 export default function ForYouPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book[]>([]);
+  const [duration, setDuration] = useState("--:--");
+  const [book, setBook] = useState<Book | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Book[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setIsSearching(true);
+      fetch(
+        `https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle?search=${encodeURIComponent(searchQuery)}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setSearchResults(Array.isArray(data) ? data : []);
+          setIsSearching(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsSearching(false);
+        });
+    }, 300); // Waits 300ms after you stop typing before calling the API
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   useEffect(() => {
     fetch(
@@ -62,6 +98,22 @@ export default function ForYouPage() {
       .catch((error) => console.error(error));
   }, []);
 
+  useEffect(() => {
+    setDuration("--:--");
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      "https://us-central1-summaristt.cloudfunctions.net/getBook?id=encodeURIComponent",
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Selected books:", data);
+        setSelectedBook(data[0]);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Sidebar />
@@ -69,19 +121,61 @@ export default function ForYouPage() {
       <main className="ml-[200px] min-h-screen">
         {/* Search Header */}
         <header className="h-[76px] flex items-center justify-end px-12 border-b border-[#e1e7ea]">
-          <div className="flex items-center w-[340px] max-w-full h-[40px] bg-[#f1f6f4] border-2 border-[#e1e7ea] rounded-lg overflow-hidden">
-            <input
-              type="text"
-              placeholder="Search for books"
-              className="flex-1 min-w-0 px-4 bg-transparent outline-none text-[#042330]"
-            />
-            <button
-              type="button"
-              aria-label="Search books"
-              className="h-full px-3 border-l border-[#e1e7ea]"
-            >
-              <IoIosSearch size={22} />
-            </button>
+          <div className="relative w-[340px] max-w-full">
+            <div className="flex items-center w-full h-[40px] bg-[#f1f6f4] border-2 border-[#e1e7ea] rounded-lg overflow-hidden">
+              <input
+                type="text"
+                placeholder="Search for books"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 min-w-0 px-4 bg-transparent outline-none text-[#042330]"
+              />
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                aria-label="Search books"
+                className="h-full px-3 border-l border-[#e1e7ea] cursor-pointer"
+              >
+                <IoIosSearch size={22} />
+              </button>
+            </div>
+
+            {/* Search Results Dropdown */}
+            {searchQuery.trim() !== "" && (
+              <div className="absolute top-[52px] right-0 w-[440px] max-h-[400px] overflow-y-auto bg-white shadow-xl border border-[#e1e7ea] p-4 z-50 flex flex-col gap-4">
+                {isSearching ? (
+                  <p className="text-sm text-gray-500">Searching...</p>
+                ) : searchResults.length === 0 ? (
+                  <p className="text-sm text-gray-500">No books found</p>
+                ) : (
+                  searchResults.map((book) => (
+                    <Link
+                      href={`/book/${book.id}`}
+                      key={book.id}
+                      className="flex items-center gap-4 p-2 hover:bg-[#f1f6f4] rounded transition"
+                    >
+                      <img
+                        src={book.imageLink}
+                        alt={book.title}
+                        className="w-16 h-20 object-contain shrink-0"
+                      />
+                      <div className="flex flex-col">
+                        <h4 className="font-bold text-sm text-[#032b41]">
+                          {book.title}
+                        </h4>
+                        <p className="text-xs text-[#6b757b] mt-1">
+                          {book.author}
+                        </p>
+                        <div className="flex items-center gap-1 text-xs text-[#6b757b] mt-1">
+                          <PiClockThin size={14} />
+                          <AudioDuration audioLink={book.audioLink} />
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </header>
 

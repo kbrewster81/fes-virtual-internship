@@ -30,6 +30,7 @@ type Book = {
   authorDescription: string;
   audioLink: string;
   tags: string[];
+  subscriptionRequired: string;
 };
 
 export default function BookInfoClient({ id }: { id: string }) {
