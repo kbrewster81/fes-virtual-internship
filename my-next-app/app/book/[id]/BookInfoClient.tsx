@@ -156,6 +156,13 @@ export default function BookInfoClient({ id }: { id: string }) {
         <div className="flex flex-col md:flex-row gap-10">
           {/* LEFT COLUMN */}
           <div className="flex-1">
+            <div className="flex h-6 justify-end mb-2">
+              {book.subscriptionRequired && (
+                <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
+                  Premium
+                </span>
+              )}
+            </div>
             <h1 className="text-[32px] font-bold leading-tight text-[#032b41] mb-4">
               {book.title}
             </h1>

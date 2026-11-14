@@ -65,8 +65,9 @@ export default function MyLibrary() {
           Saved Books
         </div>
         <div className="text-sm font-light text-[#394547] mb-[16px] text-left">
-          0 items
+          1 items
         </div>
+
         <div className="bg-[#f1f6f4] max-w-fit font-bold flex flex-col items-center gap-[8px] p-[32px] rounded-[12px] mx-auto text-center">
           Save your favorite books!
           <div className="text-[#394547] font-light">

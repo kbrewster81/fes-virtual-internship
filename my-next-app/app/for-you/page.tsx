@@ -239,13 +239,6 @@ export default function ForYouPage() {
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            <div className="flex h-6 justify-end mb-2">
-              {book.subscriptionRequired && (
-                <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
-                  Premium
-                </span>
-              )}
-            </div>
             {recommendedBooks.slice(0, 5).map((book) => (
               <Link href={`/book/${book.id}`} key={book.id}>
                 <div>
@@ -254,6 +247,13 @@ export default function ForYouPage() {
                     alt={book.title}
                     className="w-full h-48 object-contain"
                   />
+                  <div className="flex h-6 justify-end mb-2">
+                    {book.subscriptionRequired && (
+                      <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
+                        Premium
+                      </span>
+                    )}
+                  </div>
                   <h3 className="font-bold mt-3">{book.title}</h3>
                   <p className="text-sm text-gray-600">{book.author}</p>
                   <p className="text-sm text-gray-500 mt-2">{book.subTitle}</p>
@@ -279,37 +279,41 @@ export default function ForYouPage() {
           </h2>
           <p className="font-light text-[#394547] mb-10">Browse those books</p>
           <div className="flex h-6 justify-end mb-2">
-            {book.subscriptionRequired && (
-              <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
-                Premium
-              </span>
-            )}
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {suggestedBooks.slice(0, 5).map((book) => (
-              <Link href={`/book/${book.id}`} key={book.id}>
-                <div>
-                  <img
-                    src={book.imageLink}
-                    alt={book.title}
-                    className="w-full h-48 object-contain"
-                  />
-                  <h3 className="font-bold mt-3">{book.title}</h3>
-                  <p className="text-sm text-gray-600">{book.author}</p>
-                  <p className="text-sm text-gray-500 mt-2">{book.subTitle}</p>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
-                    <div className="flex items-center gap-1">
-                      <PiClockThin size={14} />
-                      <AudioDuration audioLink={book.audioLink} />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <IoMdStarOutline size={14} />
-                      <span>{book.averageRating}</span>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              {suggestedBooks.slice(0, 5).map((book) => (
+                <Link href={`/book/${book.id}`} key={book.id}>
+                  <div>
+                    <img
+                      src={book.imageLink}
+                      alt={book.title}
+                      className="w-full h-48 object-contain"
+                    />
+                    <h3 className="font-bold mt-3">{book.title}</h3>
+                    <p className="text-sm text-gray-600">{book.author}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      {book.subTitle}
+                    </p>
+                    <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
+                      <div className="flex items-center gap-1">
+                        <div className="flex h-6 justify-end mb-2">
+                          {book.subscriptionRequired && (
+                            <span className="bg-[#032b41] text-white text-xs rounded-full px-2 py-1">
+                              Premium
+                            </span>
+                          )}
+                        </div>
+                        <PiClockThin size={14} />
+                        <AudioDuration audioLink={book.audioLink} />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <IoMdStarOutline size={14} />
+                        <span>{book.averageRating}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </main>
