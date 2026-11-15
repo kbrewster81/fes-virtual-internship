@@ -10,7 +10,7 @@ import { LiaDotCircleSolid } from "react-icons/lia";
 export default function Chooseplan() {
   return (
     <div className="w-full">
-      <div className="fixed w-full h-full transition-opacity z-[10]">
+      <div className="relative w-full h-full transition-opacity z-[10]">
         <div className="relative text-center w-full pt-[48px] mb-[24px] bg-[#032b41] rounded-b-[256px]">
           <div className="max-w-[1000px] m-auto text-[#fff] p-[24px]">
             <div className="text-5xl font-bold mb-[40px]">
@@ -56,15 +56,24 @@ export default function Chooseplan() {
             <div className="text-[32px] text-[#032b41] text-center mb-[32px] font-bold">
               Choose the plan that fits you
             </div>
-            <div className="rounded-sm border-solid border-[#2be080]">
-              <div className="relative w-[24px] h-[24px] rounded-[50%] rounded xs border-solid border-[#2be080] flex items-center justify-center">
-                <LiaDotCircleSolid className="absolute w-[6px] h-[6px] bg-[#000] rounded-[50%]"></LiaDotCircleSolid>
+            <div className="rounded-sm border-4 border-solid border-[#2be080] bg-[#f1f6f4] p-6">
+              <div className="flex items-start gap-6">
+                <LiaDotCircleSolid className="w-[24px] h-[24px] shrink-0 text-black" />
                 <div className="box-border m-0 p-0">
                   <div className="text-lg font-semibold text-[#032b41] mb-[8px]">
                     Premium Plus Yearly
                   </div>
+                  <div className="text-2xl font-bold text-[#032b41] mb-[8px]">
+                    $99.99/year
+                  </div>
+                  <div className="text-[#6b757b] text-sm">
+                    7-day free trial included
+                  </div>
                 </div>
               </div>
+            </div>
+            <div className="text-sm text-[#6b757b] flex items-center gap-[8px] max-w-[240px] m-[24px]">
+              <div className="m-0 p-0 text-center">or</div>
             </div>
           </div>
         </div>
