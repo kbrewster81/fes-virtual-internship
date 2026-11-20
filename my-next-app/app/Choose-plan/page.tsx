@@ -14,13 +14,11 @@ import Login from "../components/Login";
 export default function Chooseplan() {
   const [openIndex, setOpenIndex] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
-  {
-    showLogin && <Login onClose={() => setShowLogin(false)} />;
-  }
   const [selectedPlan, setSelectedPlan] = useState("yearly");
 
   return (
     <div className="w-full">
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
       <div className="relative w-full h-full transition-opacity z-[10]">
         <div className="relative text-center w-full pt-[48px] mb-[24px] bg-[#032b41] rounded-b-[256px]">
           <div className="max-w-[1000px] m-auto text-[#fff] px-[24px]">
@@ -111,7 +109,6 @@ export default function Chooseplan() {
             </div>
           </div>
         </div>
-
         <div className="bg-[#fff] sticky z-1 p-[32px] flex flex-col items-center gap-[16px]">
           <span className="box-border m-0 p-0">
             <button
