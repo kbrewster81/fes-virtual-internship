@@ -8,7 +8,6 @@ import { PiClockThin } from "react-icons/pi";
 import { IoMdStarOutline } from "react-icons/io";
 import AudioDuration from "@/app/components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
-import Navbar from "@/app/components/Navbar";
 
 type Book = {
   id: string;
@@ -65,7 +64,6 @@ export default function BookInfo() {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       <Sidebar />
 
       <main className="ml-[200px] min-h-screen">
