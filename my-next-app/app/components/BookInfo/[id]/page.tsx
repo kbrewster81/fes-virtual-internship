@@ -6,9 +6,9 @@ import Sidebar from "@/app/for-you/sidebar";
 import { IoIosSearch } from "react-icons/io";
 import { PiClockThin } from "react-icons/pi";
 import { IoMdStarOutline } from "react-icons/io";
-import AudioDuration from "../components/AudioDuration";
+import AudioDuration from "@/app/components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
-import Navbar from "./components/Navbar";
+import Navbar from "@/app/components/Navbar";
 
 type Book = {
   id: string;
