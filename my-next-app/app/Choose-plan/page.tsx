@@ -10,11 +10,54 @@ import { LiaCircle } from "react-icons/lia";
 import { BsChevronDown } from "react-icons/bs";
 import { useState } from "react";
 import Login from "../components/Login";
+import { auth, db } from "../../firebase";
+import { addDoc, collection, onSnapshot } from "firebase/firestore";
 
 export default function Chooseplan() {
   const [openIndex, setOpenIndex] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("yearly");
+  const monthlyPriceId = "price_1UdrABRp7aP5CjZUQejmKNal";
+  const yearlyPriceId = "price_1UeLfDRp7aP5CjZUpw4wTujM";
+  const handleCheckout = async () => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
+
+    const priceId = selectedPlan === "monthly" ? monthlyPriceId : yearlyPriceId;
+
+    try {
+      const checkoutRef = await addDoc(
+        collection(db, "customers", user.uid, "checkout_sessions"),
+        {
+          price: priceId,
+          success_url: `${window.location.origin}/for-you`,
+          cancel_url: window.location.href,
+          ...(selectedPlan === "yearly" ? { trial_period_days: 7 } : {}),
+        },
+      );
+
+      const unsubscribe = onSnapshot(checkoutRef, (snapshot) => {
+        const data = snapshot.data();
+
+        if (data?.error) {
+          console.error("Stripe checkout error:", JSON.stringify(data.error));
+          alert(data.error.message || JSON.stringify(data.error));
+          unsubscribe();
+        }
+
+        if (data?.url) {
+          unsubscribe();
+          window.location.assign(data.url);
+        }
+      });
+    } catch (error) {
+      console.error("Checkout error:", error);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -116,7 +159,7 @@ export default function Chooseplan() {
               className="bg-[#2bd97c] text-[#032b41] rounded-sm text-base flex items-center justify-center w-[300px] min-w-[180px]"
             ></button>
             <button
-              onClick={() => setShowLogin(true)}
+              onClick={handleCheckout}
               className="bg-[#2bd97c] text-[#032b41] h-[40px] rounded-sm text-base flex items-center justify-center w-[300px] cursor-pointer"
             >
               {selectedPlan === "monthly"
@@ -129,7 +172,7 @@ export default function Chooseplan() {
           Cancel your trial at any time before it ends, and you won't be
           charged.
         </div>
-        <div className="rounded-b-[1px] border-solid border-box border-[#ddd] mb-[8px] overflow-hidden">
+        <div className=" max-w-[1070px] mx-auto px-[24px] rounded-b-[1px] border-solid box-border border-[#ddd] mb-[8px] overflow-hidden">
           <div
             className="flex justify-between items-center cursor-pointer p-[24px] gap-[8px]"
             onClick={() => setOpenIndex(openIndex === 0 ? null : 0)}
@@ -153,7 +196,7 @@ export default function Chooseplan() {
               </div>
             )}
           </div>
-          <div className="rounded-b-[1px] border-solid border-box border-[#ddd] mb-[8px] overflow-hidden">
+          <div className="rounded-b-[1px] border-solid box-border border-[#ddd] mb-[8px] overflow-hidden">
             <div
               className="flex justify-between items-center cursor-pointer p-[24px] gap-[8px]"
               onClick={() => setOpenIndex(openIndex === 1 ? null : 1)}
@@ -179,7 +222,7 @@ export default function Chooseplan() {
               )}
             </div>
           </div>
-          <div className="rounded-b-[1px] border-solid border-box border-[#ddd] mb-[8px] overflow-hidden">
+          <div className="rounded-b-[1px] border-solid box-border border-[#ddd] mb-[8px] overflow-hidden">
             <div
               className="flex justify-between items-center cursor-pointer p-[24px] gap-[8px]"
               onClick={() => setOpenIndex(openIndex === 2 ? null : 2)}
@@ -203,7 +246,7 @@ export default function Chooseplan() {
               )}
             </div>
           </div>
-          <div className="rounded-b-[1px] border-solid border-box border-b border-[#ddd] mb-[8px] overflow-hidden">
+          <div className="rounded-b-[1px] border-solid box-border border-b border-[#ddd] mb-[8px] overflow-hidden">
             <div
               className="flex justify-between items-center cursor-pointer p-[24px] gap-[8px]"
               onClick={() => setOpenIndex(openIndex === 3 ? null : 3)}

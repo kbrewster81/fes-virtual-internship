@@ -4,6 +4,8 @@ import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebase";
 
 type LoginProps = {
   onClose: () => void;
@@ -98,7 +100,15 @@ export default function Login({ onClose }: LoginProps) {
           <div className="h-px flex-1 bg-gray-300"></div>
         </div>
         <button
-          onClick={() => router.push("/for-you")}
+          onClick={async () => {
+            try {
+              const provider = new GoogleAuthProvider();
+              await signInWithPopup(auth, provider);
+              router.push("/for-you");
+            } catch (error) {
+              console.error("Google sign-in failed:", error);
+            }
+          }}
           type="button"
           className="relative flex w-full items-center justify-center rounded bg-blue-500 py-3 text-white cursor-pointer"
         >

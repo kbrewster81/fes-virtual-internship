@@ -11,6 +11,7 @@ import { FaStar } from "react-icons/fa";
 import { BiCrown } from "react-icons/bi";
 import { FaStarHalf } from "react-icons/fa";
 import { LuLeaf } from "react-icons/lu";
+import Settings from "./settings/page";
 
 export default function Home() {
   const [showLogin, setShowLogin] = useState(false);
@@ -45,6 +46,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans dark:bg-black">
       <Navbar onLoginClick={() => setShowLogin(true)} />
+     
       <main className="w-full max-w-7xl  mx-auto px-8 md:px-16">
         <div className="flex flex-col md:flex-row items-center px-24 gap-12 mt-16">
           {/* Left side: Text */}
