@@ -10,6 +10,8 @@ import { IoIosSearch } from "react-icons/io";
 import { SlSettings } from "react-icons/sl";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { MdLogout } from "react-icons/md";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase";
 
 export default function SideBar() {
   return (
@@ -31,7 +33,7 @@ export default function SideBar() {
             className="flex  gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
           >
             <BsBookmark className=" w-6 h-6" />
-            My Library 
+            My Library
           </Link>
         </div>
         <div className="flex mt-[32px]">
@@ -56,8 +58,8 @@ export default function SideBar() {
       <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px]">
         <div className="flex mt-[80px]">
           <Link
-            href="/for-you"
-            className="flex  gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
+            href="/settings"
+            className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
           >
             <SlSettings className=" w-6 h-6" />
             Settings
@@ -65,7 +67,7 @@ export default function SideBar() {
         </div>
         <div className="flex mt-[32px]">
           <Link
-            href="/for-you"
+            href="/Hel & Support"
             className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
           >
             <IoMdHelpCircleOutline className=" w-6 h-6" />
@@ -73,13 +75,13 @@ export default function SideBar() {
           </Link>
         </div>
         <div className="flex mt-[32px]">
-          <Link
-            href="/for-you"
-            className="flex gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
+          <button
+            onClick={() => signOut(auth)}
+            className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
           >
-            <MdLogout className=" w-6 h-6" />
+            <MdLogout className="w-6 h-6" />
             Logout
-          </Link>
+          </button>
         </div>
       </div>
     </div>
