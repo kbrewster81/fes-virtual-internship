@@ -8,6 +8,8 @@ import { PiClockThin } from "react-icons/pi";
 import { IoMdStarOutline } from "react-icons/io";
 import AudioDuration from "@/app/components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
+import Navbar from "@/app/components/Navbar";
+import Login from "@/app/components/Login";
 
 type Book = {
   id: string;
@@ -22,6 +24,7 @@ export default function BookInfo() {
   const [books, setBooks] = useState<Book[]>([]);
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book[]>([]);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -65,7 +68,8 @@ export default function BookInfo() {
   return (
     <div className="min-h-screen">
       <Sidebar />
-
+      <Navbar onLoginClick={() => setShowLogin(true)} />
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
       <main className="ml-[200px] min-h-screen">
         {/* Search Header */}
         <header className="h-[76px] flex items-center justify-end px-12 border-b border-[#e1e7ea]">
