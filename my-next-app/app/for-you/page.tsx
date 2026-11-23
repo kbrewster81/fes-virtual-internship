@@ -10,7 +10,7 @@ import AudioDuration from "../components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
 
 type Book = {
-  id: string[];
+  id: string;
   title: string;
   author: string;
   imageLink: string;
@@ -28,7 +28,7 @@ type Book = {
 export default function ForYouPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
-  const [selectedBook, setSelectedBook] = useState<Book[]>([]);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [duration, setDuration] = useState("--:--");
   const [book, setBook] = useState<Book | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -103,17 +103,9 @@ export default function ForYouPage() {
     setDuration("--:--");
   }, []);
 
-  useEffect(() => {
-    fetch(
-      "https://us-central1-summaristt.cloudfunctions.net/getBook?id=encodeURIComponent",
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Selected books:", data);
-        setSelectedBook(data[0]);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+  if (!selectedBook) {
+    return <div>Loading books...</div>;
+  }
 
   return (
     <div className="min-h-screen">
@@ -219,11 +211,12 @@ export default function ForYouPage() {
               <div className="flex items-center gap-2 mt-2">
                 {/* Add your existing play icon here */}
                 <FaPlayCircle className=" w-full h-[50px] rounded-[50%]" />
-                <AudioDuration
-                  audioLink={selectedBook.audioLink}
-                  long={true}
-                  className="text-[#032b41] text-sm font-medium"
-                />
+                <span className="text-[#032b41] text-sm font-medium">
+                  <AudioDuration
+                    audioLink={selectedBook.audioLink}
+                    long={true}
+                  />
+                </span>
               </div>
             </div>
           </div>

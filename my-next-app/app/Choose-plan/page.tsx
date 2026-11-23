@@ -14,7 +14,7 @@ import { auth, db } from "../../firebase";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 
 export default function Chooseplan() {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("yearly");
   const monthlyPriceId = "price_1UdrABRp7aP5CjZUQejmKNal";
