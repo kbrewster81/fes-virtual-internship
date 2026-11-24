@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans dark:bg-black">
       <Navbar onLoginClick={() => setShowLogin(true)} />
-     
+
       <main className="w-full max-w-7xl  mx-auto px-8 md:px-16">
         <div className="flex flex-col md:flex-row items-center px-24 gap-12 mt-16">
           {/* Left side: Text */}
@@ -340,7 +340,7 @@ export default function Home() {
         </div>
       </section>
       <div className=" p-12 w-full">
-        <div className="max-w-[1070px] bg-[#d7e9ff] mx-auto p-24">
+        <div className="max-w-full bg-[#d7e9ff] mx-auto p-24">
           <div className="flex relative justify-between text-sm mt-auto mb-auto">
             <div className="flex flex-col gap-2">
               <h3 className="font-bold text-lg text-[#032b41]">Actions</h3>

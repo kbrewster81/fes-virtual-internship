@@ -16,6 +16,11 @@ import { HiOutlineLightBulb } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { BsBookmarkFill } from "react-icons/bs";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase";
+import Login from "@/app/components/Login";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase";
 
 type Book = {
   id: string;
@@ -30,7 +35,7 @@ type Book = {
   authorDescription: string;
   audioLink: string;
   tags: string[];
-  subscriptionRequired: string;
+  subscriptionRequired: boolean;
 };
 
 export default function BookInfoClient({ id }: { id: string }) {
@@ -40,6 +45,70 @@ export default function BookInfoClient({ id }: { id: string }) {
   const [book, setBook] = useState<Book | null>(null);
   const [duration, setDuration] = useState("--:--");
   const [subscriptionRequired, setSubscriptionRequired] = useState(true);
+  const [user, authLoading] = useAuthState(auth);
+  const [showLogin, setShowLogin] = useState(false);
+  const [subscription, setSubscription] = useState(false);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("Firebase user:", user?.email ?? "Not logged in");
+    console.log("Auth loading:", authLoading);
+  }, [user, authLoading]);
+
+  useEffect(() => {
+    if (!user) {
+      setSubscription(false);
+      setSubscriptionLoading(false);
+      return;
+    }
+
+    setSubscriptionLoading(true);
+
+    const subscriptionRef = collection(
+      db,
+      "customers",
+      user.uid,
+      "subscriptions",
+    );
+
+    const unsubscribe = onSnapshot(
+      subscriptionRef,
+      (snapshot) => {
+        const hasSubscription = snapshot.docs.some((doc) => {
+          const status = doc.data().status;
+          return status === "active" || status === "trialing";
+        });
+
+        setSubscription(hasSubscription);
+        setSubscriptionLoading(false);
+      },
+      (error) => {
+        console.error("Subscription error:", error);
+        setSubscription(false);
+        setSubscriptionLoading(true);
+      },
+    );
+
+    return () => unsubscribe();
+  }, [user]);
+
+  const handleRead = () => {
+    if (authLoading) return;
+
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
+
+    if (subscriptionLoading || !book) return;
+
+    if (book.subscriptionRequired && !subscription) {
+      router.push("/choose-plan");
+      return;
+    }
+
+    router.push(`/player/${book.id}`);
+  };
 
   const formatDuration = (seconds: any) => {
     if (!seconds || isNaN(seconds)) return "--:--";
@@ -229,7 +298,7 @@ export default function BookInfoClient({ id }: { id: string }) {
 
             <div className="flex items-center gap-4 mb-6 mt-6">
               <button
-                onClick={() => router.push(`/player/${book.id}`)}
+                onClick={handleRead}
                 className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded"
               >
                 <AiOutlineRead size={24} />
@@ -237,7 +306,7 @@ export default function BookInfoClient({ id }: { id: string }) {
               </button>
 
               <button
-                onClick={() => router.push(`/player/${book.id}`)}
+                onClick={handleRead}
                 className="flex items-center justify-center gap-2 w-[144px] h-[48px] bg-[#032b41] text-white rounded"
               >
                 <TiMicrophoneOutline size={24} />
@@ -294,6 +363,7 @@ export default function BookInfoClient({ id }: { id: string }) {
           </div>
         </div>
       </main>
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
     </div>
   );
 }

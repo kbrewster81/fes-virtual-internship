@@ -4,7 +4,11 @@ import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useRouter } from "next/navigation";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../../firebase";
 
 type LoginProps = {
@@ -12,6 +16,8 @@ type LoginProps = {
 };
 
 export default function Login({ onClose }: LoginProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
   const [view, setView] = useState("login");
@@ -38,20 +44,19 @@ export default function Login({ onClose }: LoginProps) {
             <input
               type="email"
               placeholder="Email Address"
-              aria-label="Email Address"
-              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
             />
 
-            {view === "signup" && (
-              <input
-                type="password"
-                placeholder="Password"
-                aria-label="Password"
-                required
-                className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
-              />
-            )}
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
+            />
+            <p className="text-black">Email state: {email}</p>
           </div>
 
           <button
@@ -138,7 +143,17 @@ export default function Login({ onClose }: LoginProps) {
           />
         </div>
         <button
-          onClick={() => router.push("/for-you")}
+          onClick={async () => {
+            try {
+              console.log("Email being submitted:", JSON.stringify(email));
+              await signInWithEmailAndPassword(auth, email, password);
+              onClose();
+              router.push("/for-you");
+            } catch (error) {
+              console.error("Login failed:", error);
+              alert(error instanceof Error ? error.message : "Login failed");
+            }
+          }}
           className="bg-[#20d481] w-full text-base items-center h-12 mt-4 py-3 px-12 rounded cursor-pointer"
         >
           Login
