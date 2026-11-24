@@ -104,7 +104,17 @@ export default function ForYouPage() {
   }, []);
 
   if (!selectedBook) {
-    return <div>Loading books...</div>;
+    return (
+      <div className="skeleton-container">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="skeleton-card">
+            <div className="skeleton skeleton-cover" />
+            <div className="skeleton skeleton-title" />
+            <div className="skeleton skeleton-author" />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (

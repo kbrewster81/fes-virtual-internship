@@ -68,7 +68,16 @@ function PlayerContent() {
             </div>
           </div>
         ) : (
-          <p>Loading book...</p>
+          <div className="max-w-[800px] mx-auto animate-pulse">
+            <div className="h-8 w-2/3 bg-gray-200 rounded mb-6" />
+
+            {Array.from({ length: 12 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-4 w-full bg-gray-200 rounded mb-4"
+              />
+            ))}
+          </div>
         )}
       </main>
 
@@ -86,7 +95,14 @@ function PlayerContent() {
 
 export default function PlayerPage() {
   return (
-    <Suspense fallback={<p>Loading player...</p>}>
+    <Suspense
+      fallback={
+        <div className="p-8 animate-pulse">
+          <div className="h-8 w-2/3 bg-gray-200 rounded mb-6" />
+          <div className="h-4 w-full bg-gray-200 rounded" />
+        </div>
+      }
+    >
       <PlayerContent />
     </Suspense>
   );

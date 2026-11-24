@@ -197,7 +197,13 @@ export default function BookInfoClient({ id }: { id: string }) {
     }
   };
   if (!book) {
-    return <div>Loading book...</div>;
+    return (
+      <div className="skeleton-container">
+        <div className="skeleton skeleton-cover" />
+        <div className="skeleton skeleton-title" />
+        <div className="skeleton skeleton-author" />
+      </div>
+    );
   }
 
   return (
