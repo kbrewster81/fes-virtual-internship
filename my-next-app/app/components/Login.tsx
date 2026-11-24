@@ -133,25 +133,31 @@ export default function Login({ onClose }: LoginProps) {
           <input
             type="email"
             placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
           />
 
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded border-2 border-[#bac8ce] bg-white p-2 text-sm text-black outline-none focus:border-blue-500"
           />
         </div>
         <button
           onClick={async () => {
             try {
-              console.log("Email being submitted:", JSON.stringify(email));
-              await signInWithEmailAndPassword(auth, email, password);
+              await signInWithEmailAndPassword(
+                auth,
+                "guest@gmail.com",
+                "guest123",
+              );
               onClose();
               router.push("/for-you");
             } catch (error) {
-              console.error("Login failed:", error);
-              alert(error instanceof Error ? error.message : "Login failed");
+              console.error("Guest login failed:", error);
             }
           }}
           className="bg-[#20d481] w-full text-base items-center h-12 mt-4 py-3 px-12 rounded cursor-pointer"

@@ -48,7 +48,7 @@ export default function BookInfoClient({ id }: { id: string }) {
   const [user, authLoading] = useAuthState(auth);
   const [showLogin, setShowLogin] = useState(false);
   const [subscription, setSubscription] = useState(false);
-  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
 
   useEffect(() => {
     console.log("Firebase user:", user?.email ?? "Not logged in");
