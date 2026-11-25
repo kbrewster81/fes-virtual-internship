@@ -8,6 +8,7 @@ import { PiClockThin } from "react-icons/pi";
 import { IoMdStarOutline } from "react-icons/io";
 import AudioDuration from "../components/AudioDuration";
 import { FaPlayCircle } from "react-icons/fa";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 type Book = {
   id: string;
@@ -34,6 +35,7 @@ export default function ForYouPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Book[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -119,9 +121,15 @@ export default function ForYouPage() {
 
   return (
     <div className="min-h-screen">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="ml-[200px] min-h-screen">
+      <main className="ml-0 md:ml-[200px] min-h-screen">
+        <header className="h-[76px] flex items-center justify-end gap-4 px-6 md:px-12 border-b border-[#e1e7ea]">
+          <RxHamburgerMenu
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden w-6 h-6 cursor-pointer"
+          />
+        </header>
         {/* Search Header */}
         <header className="h-[76px] flex items-center justify-end px-12 border-b border-[#e1e7ea]">
           <div className="relative w-[340px] max-w-full">

@@ -13,77 +13,98 @@ import { MdLogout } from "react-icons/md";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 
-export default function SideBar() {
+type SideBarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function SideBar({ isOpen, onClose }: SideBarProps) {
   return (
-    <div className="flex flex-col bg-[#f7faf9] fixed w-[200px] min-w-[200px] top-[0] left-[0] mb-[20px] h-screen backdrop-opacity-[0] transition-all">
-      <Image src={logo} alt="Summarist logo" className="w-40 h-auto"></Image>
-      <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px] mb-[20px]">
-        <div className="flex mt-[32px]">
-          <Link
-            href="/for-you"
-            className="flex gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
-          >
-            <PiHouseLine className=" w-6 h-6" />
-            For you
-          </Link>
-        </div>
-        <div className="flex mt-[32px]">
-          <Link
-            href="/my-library"
-            className="flex  gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
-          >
-            <BsBookmark className=" w-6 h-6" />
-            My Library
-          </Link>
-        </div>
-        <div className="flex mt-[32px]">
-          <Link
-            href="/for-you"
-            className="flex gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
-          >
-            <RiBallPenLine className=" w-6 h-6" />
-            Highlights
-          </Link>
-        </div>
-        <div className="flex mt-[32px]">
-          <Link
-            href="/for-you"
-            className="flex gap-2 items-center  h-[32px] text-black mb-[18px] cursor-pointer"
-          >
-            <IoIosSearch className=" w-6 h-6" />
-            Search
-          </Link>
+    <>
+      {isOpen && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+        />
+      )}
+      <div
+        className={`${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 z-50 flex flex-col bg-[#f7faf9] fixed w-[200px] min-w-[200px] top-[0] left-[0]       h-screen transition-all`}
+      >
+        <div className="flex flex-col bg-[#f7faf9] fixed w-[200px] min-w-[200px] top-[0] left-[0] mb-[20px] h-screen backdrop-opacity-[0] transition-all">
+          <Image
+            src={logo}
+            alt="Summarist logo"
+            className="w-40 h-auto"
+          ></Image>
+          <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px] mb-[20px]">
+            <div className="flex mt-[32px]">
+              <Link
+                href="/for-you"
+                className="flex gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
+              >
+                <PiHouseLine className=" w-6 h-6" />
+                For you
+              </Link>
+            </div>
+            <div className="flex mt-[32px]">
+              <Link
+                href="/my-library"
+                className="flex  gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
+              >
+                <BsBookmark className=" w-6 h-6" />
+                My Library
+              </Link>
+            </div>
+            <div className="flex mt-[32px]">
+              <Link
+                href="/for-you"
+                className="flex gap-2 items-center  h-[32px] text-black mb-[6px] cursor-pointer"
+              >
+                <RiBallPenLine className=" w-6 h-6" />
+                Highlights
+              </Link>
+            </div>
+            <div className="flex mt-[32px]">
+              <Link
+                href="/for-you"
+                className="flex gap-2 items-center  h-[32px] text-black mb-[18px] cursor-pointer"
+              >
+                <IoIosSearch className=" w-6 h-6" />
+                Search
+              </Link>
+            </div>
+          </div>
+          <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px]">
+            <div className="flex mt-[80px]">
+              <Link
+                href="/settings"
+                className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
+              >
+                <SlSettings className=" w-6 h-6" />
+                Settings
+              </Link>
+            </div>
+            <div className="flex mt-[32px]">
+              <Link
+                href="/Hel & Support"
+                className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
+              >
+                <IoMdHelpCircleOutline className=" w-6 h-6" />
+                Help & Support
+              </Link>
+            </div>
+            <div className="flex mt-[32px]">
+              <button
+                onClick={() => signOut(auth)}
+                className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
+              >
+                <MdLogout className="w-6 h-6" />
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex-1 flex-col justify-between pl-4 py-4 mt-[40px]">
-        <div className="flex mt-[80px]">
-          <Link
-            href="/settings"
-            className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
-          >
-            <SlSettings className=" w-6 h-6" />
-            Settings
-          </Link>
-        </div>
-        <div className="flex mt-[32px]">
-          <Link
-            href="/Hel & Support"
-            className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
-          >
-            <IoMdHelpCircleOutline className=" w-6 h-6" />
-            Help & Support
-          </Link>
-        </div>
-        <div className="flex mt-[32px]">
-          <button
-            onClick={() => signOut(auth)}
-            className="flex gap-2 items-center h-[32px] text-black mb-[6px] cursor-pointer"
-          >
-            <MdLogout className="w-6 h-6" />
-            Logout
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
